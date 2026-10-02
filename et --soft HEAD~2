@@ -1,0 +1,53 @@
+[33me3a4137[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32maddGraphQL[m[33m)[m ignoreProperites google
+[33m8c1651c[m add reset_password api
+[33mff84c93[m[33m ([m[1;31morigin/main[m[33m)[m Merge pull request #23 from dohan204/addGraphQL
+[33mf2579d8[m[33m ([m[1;31morigin/addGraphQL[m[33m)[m api filter
+[33m3714689[m Merge pull request #22 from dohan204/addGraphQL
+[33med1843e[m add api
+[33mc508c11[m completed api for role
+[33m97c8481[m Merge pull request #21 from dohan204/addGraphQL
+[33m077cb10[m dohos
+[33md64234a[m Merge pull request #20 from dohan204/addGraphQL
+[33mc375168[m add dashboard api
+[33mcc9832f[m Merge pull request #19 from dohan204/addGraphQL
+[33mc319581[m more another api
+[33m6734481[m Merge pull request #18 from dohan204/addGraphQL
+[33m693e2ac[m add ci
+[33med33e3c[m Merge pull request #17 from dohan204/addGraphQL
+[33m28d4928[m additional another api
+[33mce2e1d7[m setup lại môi trường BE
+[33mcbfd236[m Merge pull request #16 from dohan204/addGraphQL
+[33mcc6545f[m additional api
+[33m1fc6e87[m add cache
+[33mb8d4d79[m Merge pull request #15 from dohan204/scrum-37-CRUD-Event
+[33mdb52a7b[m[33m ([m[1;31morigin/scrum-37-CRUD-Event[m[33m)[m update DB procedure for Event
+[33m563437f[m Merge pull request #14 from dohan204/main
+[33m9a8565c[m Merge pull request #13 from dohan204/addGraphQL
+[33m1a98658[m done
+[33m474576c[m Merge pull request #12 from dohan204/main
+[33me42fb7c[m Merge pull request #11 from dohan204/addGraphQL
+[33m464e916[m add graph and song api
+[33m05a9cf9[m Merge pull request #10 from dohan204/addGraphQL
+[33m8a13f1f[m add GraphQL for queries
+[33md424301[m[33m ([m[1;32mmain[m[33m)[m Merge pull request #9 from dohan204/scrum-37-CRUD-Event
+[33m5685a9c[m api for event
+[33m249b8de[m Merge pull request #8 from dohan204/scrum-21-Crud-Church
+[33mb47a91d[m[33m ([m[1;31morigin/scrum-21-Crud-Church[m[33m, [m[1;32mscrum-21-Crud-Church[m[33m)[m done scrum-21
+[33md84cba1[m Merge pull request #7 from dohan204/scrum-21-Crud-Church
+[33mca8d9ea[m on branch21
+[33m417d4c5[m[33m ([m[1;32mTest[m[33m)[m Merge branch 'main' of https://github.com/dohan204/Journey_of_faith_backend
+[33mfff6723[m[33m ([m[1;31morigin/scrum-22-crub-testing[m[33m, [m[1;32mscrum-22-crub-testing[m[33m)[m add unit testing for user, and auth service
+[33m8703662[m delete
+[33mf6947c3[m Merge pull request #4 from dohan204/scrum-22-crub-testing
+[33m3383424[m Completed-scrum-22-api-testing-(xong co ban)
+[33mddd8c2e[m success, creaate question, for ttest
+[33mc29ddbd[m done topic category-question-quesntionlevel
+[33mbfaac38[m Merge pull request #3 from dohan204/scrum-20-register-login
+[33mc3e5fc8[m[33m ([m[1;31morigin/scrum-20-register-login[m[33m, [m[1;32mscrum-20-register-login[m[33m)[m fix error: Lifetime
+[33mde38f20[m Merge pull request #2 from dohan204/scrum-20-register-login
+[33mc8e5848[m add: refreshToken for login
+[33mf49e424[m Merge pull request #1 from dohan204/scrum-20-register-login
+[33ma98ed87[m done: task create api register-login
+[33md5ef350[m task: done clean architecture structure
+[33m8a62342[m init commit with gitignore
+[33m7e0d2ef[m first commit

@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="Journey_of_faith.Api/Journey_of_faith.Api.csproj" />
+    <Project Path="Journey_of_faith.Application/Journey_of_faith.Application.csproj" />
+    <Project Path="Journey_of_faith.Domain/Journey_of_faith.Domain.csproj" />
+    <Project Path="Journey_of_faith.Infrastructure/Journey_of_faith.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="UnitTesting/UnitTesting.csproj" Id="a6d18951-8be0-4f03-9081-e0e1b9c59683" />
+    <Project Path="IntegrationTesting/IntegrationTesting.csproj" />
+  </Folder>
+</Solution>

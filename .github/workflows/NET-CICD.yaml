@@ -1,0 +1,82 @@
+# name: NET CICD
+
+
+# on: 
+#     push: 
+#         branches: 
+#             ['main']
+#     pull_request: 
+#         branches: 
+#             ['main']
+#     issues: 
+#         types: 
+#             - opened
+# jobs: 
+#     build_project: 
+#         runs-on: ubuntu-latest
+#         steps: 
+#             - name: configuration Virtual machine
+#               uses: actions/checkout@v6
+
+#             - name: configuration dotnet
+#               uses: actions/setup-dotnet@v5
+#               with: 
+#                 dotnet-version: '10.0.x'
+
+#             - name: configuration anh install package
+#               run: dotnet restore
+
+#             - name: build project
+#               run: dotnet build --configuration Release --no-restore
+
+#             # - name: test
+#             #   run: dotnet test --no-build --configuration Release
+
+#             - name: publish app
+#               run: >
+#                 dotnet publish Journey_of_faith.Api/Journey_of_faith.Api.csproj 
+#                     --configuration Release 
+#                     --no-build 
+#                     -o ./publish
+
+#             - name: upload artifact
+#               uses: actions/upload-artifact@v4
+#               with: 
+#                 name: api-publist-build
+#                 path: ./publish
+           
+name: NET CICD
+
+on:
+  push:
+    branches: [ 'main' ]
+  pull_request:
+    branches: [ 'main' ]
+  issues:
+    types: [ opened ]
+jobs:
+  build_project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build project
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Publish app
+        run: dotnet publish Journey_of_faith.Api/Journey_of_faith.Api.csproj --configuration Release --no-build -o ./publish
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-publish-build
+          path: ./publish
