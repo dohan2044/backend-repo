@@ -16,7 +16,7 @@ public sealed class ArenaQueries : BaseRepository, IArenaQueries
         : base(connectionFactory, options) { }
 
     // ── Levels + User Progress ────────────────────────────────────────────────
-    public Task<IReadOnlyList<ArenaLevelSummaryDto>> GetLevelsAsync(int userId, CancellationToken cancellationToken = default)
+    public Task<IReadOnlyList<ArenaLevelSummaryDto>> GetLevelsAsync(Guid userId, CancellationToken cancellationToken = default)
         => QueryAsync<IReadOnlyList<ArenaLevelSummaryDto>>(async connection =>
         {
             var rows = await connection.QueryAsync<ArenaLevelSummaryDto>(new CommandDefinition($@"
@@ -45,7 +45,7 @@ public sealed class ArenaQueries : BaseRepository, IArenaQueries
         });
 
     // ── Level Detail ──────────────────────────────────────────────────────────
-    public Task<ArenaLevelDetailDto?> GetLevelDetailAsync(int levelId, int userId, CancellationToken cancellationToken = default)
+    public Task<ArenaLevelDetailDto?> GetLevelDetailAsync(int levelId, Guid userId, CancellationToken cancellationToken = default)
         => QueryAsync<ArenaLevelDetailDto?>(async connection =>
         {
             return await connection.QuerySingleOrDefaultAsync<ArenaLevelDetailDto>(new CommandDefinition($@"
@@ -72,7 +72,7 @@ public sealed class ArenaQueries : BaseRepository, IArenaQueries
         });
 
     // ── Attempt Questions (for start & internal scoring) ─────────────────────
-    public Task<ArenaStartAttemptDto?> GetAttemptQuestionsAsync(long attemptId, int userId, CancellationToken cancellationToken = default)
+    public Task<ArenaStartAttemptDto?> GetAttemptQuestionsAsync(long attemptId, Guid userId, CancellationToken cancellationToken = default)
         => QueryAsync<ArenaStartAttemptDto?>(async connection =>
         {
             using var multi = await connection.QueryMultipleAsync(new CommandDefinition($@"
@@ -125,7 +125,7 @@ public sealed class ArenaQueries : BaseRepository, IArenaQueries
         });
 
     // ── User Progress ─────────────────────────────────────────────────────────
-    public Task<IReadOnlyList<ArenaUserProgressDto>> GetUserProgressAsync(int userId, CancellationToken cancellationToken = default)
+    public Task<IReadOnlyList<ArenaUserProgressDto>> GetUserProgressAsync(Guid userId, CancellationToken cancellationToken = default)
         => QueryAsync<IReadOnlyList<ArenaUserProgressDto>>(async connection =>
         {
             var rows = await connection.QueryAsync<ArenaUserProgressDto>(new CommandDefinition($@"
@@ -141,7 +141,7 @@ public sealed class ArenaQueries : BaseRepository, IArenaQueries
         });
 
     // ── Attempt History ───────────────────────────────────────────────────────
-    public Task<IReadOnlyList<ArenaAttemptHistoryDto>> GetAttemptHistoryAsync(int userId, CancellationToken cancellationToken = default)
+    public Task<IReadOnlyList<ArenaAttemptHistoryDto>> GetAttemptHistoryAsync(Guid userId, CancellationToken cancellationToken = default)
         => QueryAsync<IReadOnlyList<ArenaAttemptHistoryDto>>(async connection =>
         {
             var rows = await connection.QueryAsync<ArenaAttemptHistoryDto>(new CommandDefinition($@"
@@ -174,7 +174,7 @@ public sealed class ArenaQueries : BaseRepository, IArenaQueries
         });
 
     // ── Achievements ──────────────────────────────────────────────────────────
-    public Task<IReadOnlyList<ArenaAchievementDto>> GetUserAchievementsAsync(int userId, CancellationToken cancellationToken = default)
+    public Task<IReadOnlyList<ArenaAchievementDto>> GetUserAchievementsAsync(Guid userId, CancellationToken cancellationToken = default)
         => QueryAsync<IReadOnlyList<ArenaAchievementDto>>(async connection =>
         {
             var rows = await connection.QueryAsync<ArenaAchievementDto>(new CommandDefinition($@"
@@ -203,7 +203,7 @@ public sealed class ArenaQueries : BaseRepository, IArenaQueries
                 $"SELECT CASE WHEN EXISTS (SELECT 1 FROM [{_schemaName.Schema}].[{ArenaTable.Level}] WHERE LevelCode = @LevelCode AND ISNULL(IsDeleted,0) = 0) THEN 1 ELSE 0 END",
                 new { LevelCode = levelCode }, cancellationToken: cancellationToken)) > 0);
 
-    public Task<bool> AttemptBelongsToUserAsync(long attemptId, int userId, CancellationToken cancellationToken = default)
+    public Task<bool> AttemptBelongsToUserAsync(long attemptId, Guid userId, CancellationToken cancellationToken = default)
         => QueryAsync(async connection =>
             await connection.ExecuteScalarAsync<int>(new CommandDefinition(
                 $"SELECT CASE WHEN EXISTS (SELECT 1 FROM [{_schemaName.Schema}].[{ArenaTable.Attempt}] WHERE Id = @AttemptId AND UserId = @UserId) THEN 1 ELSE 0 END",

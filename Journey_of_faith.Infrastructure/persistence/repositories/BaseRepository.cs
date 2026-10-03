@@ -32,6 +32,8 @@ namespace Journey_of_faith.Infrastructure.repositories
             return await query(connection);
         }
 
+
+         
         protected async Task<TResult> QueryAsync<TResult>(Func<IDbConnection, Task<TResult>> query)
         {
             using var connection = _dbConnection.CreateConnection();

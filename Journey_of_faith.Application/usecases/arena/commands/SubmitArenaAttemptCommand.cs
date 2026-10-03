@@ -31,7 +31,7 @@ public class SubmitArenaAttemptHandler : IRequestHandler<SubmitArenaAttemptComma
 
     public async Task<ArenaSubmitResultDto> Handle(SubmitArenaAttemptCommand command, CancellationToken cancellationToken)
     {
-        if (!int.TryParse(_currentUser.UserId, out var userId))
+        if (!Guid.TryParse(_currentUser.UserId, out var userId))
             throw new UnauthorizationException("Người dùng không hợp lệ.");
 
         // Validate attempt thuộc user và chưa submit

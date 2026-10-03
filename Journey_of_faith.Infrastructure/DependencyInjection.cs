@@ -21,6 +21,8 @@ using Google.Apis.Auth.OAuth2;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using Journey_of_faith.Application.common.interfaces.caching;
+using Journey_of_faith.Infrastructure.persistence.repositories;
+using Journey_of_faith.Application.usecases.students;
 
 namespace Journey_of_faith.Infrastructure
 {
@@ -108,7 +110,8 @@ namespace Journey_of_faith.Infrastructure
             services.AddLoggedScoped<Journey_of_faith.Application.usecases.questions.IQuestionQueries, QuestionQueries>();
             services.AddLoggedScoped<IEventRepository, EventRepository>();
             services.AddLoggedScoped<Journey_of_faith.Application.usecases.events.IEventQueries, EventQueries>();
-
+            services.AddScoped<IStudentGroupRepository, StudentRepository>();
+            services.AddScoped<IStudentQueries, StudentQueries>();
             services.AddScoped<IUnitOfWork, Journey_of_faith.Infrastructure.context.UnitOfWork>();
             services.AddLoggedScoped<IFileStorageService, FileStorageQuestion>();
             services.AddLoggedScoped<IExamRepository, ExamRepository>();

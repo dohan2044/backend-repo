@@ -13,6 +13,7 @@ public class GetChurchWithCondition : IRequest<PagedResult<ChurchViewDto>>, ICac
     public int Page { get; set; }
     public int PageSize { get; set; }
 
+    public string CacheGroup => "churches";
     public string CacheKey => $"churches:{NameChurch}_{Province}_{Ward}_{Time}_{Page}_{PageSize}";
     public TimeSpan? Expiration => TimeSpan.FromMinutes(10);
 }

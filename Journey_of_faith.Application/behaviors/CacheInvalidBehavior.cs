@@ -1,11 +1,11 @@
 using MediatR;
-using Microsoft.Extensions.Caching.Memory;
 using Journey_of_faith.Application.common.interfaces;
+using Journey_of_faith.Application.common.caching.interfaces;
 namespace Journey_of_faith.Application.behaviors;
 
-public class CacheInvalidBehavior<TRequest, TResponse>(IMemoryCache memoryCache) 
+public class CacheInvalidBehavior<TRequest, TResponse>(ICacheGroupVersionStore cacheGroupVersions) 
     : IPipelineBehavior<TRequest, TResponse> 
-    where TRequest : IRequest<TRequest>, ICacheInvalidCommand
+    where TRequest : IRequest<TResponse>, ICacheInvalidCommand
 {
     public async Task<TResponse> Handle(
         TRequest request, 
@@ -17,11 +17,11 @@ public class CacheInvalidBehavior<TRequest, TResponse>(IMemoryCache memoryCache)
         var response = await next();
 
         // nếu kh có lỗi thì xóa cache
-        if(request.CacheKeys is not null)
+        if(request.CacheGroups is not null)
         {
-            foreach(string key in request.CacheKeys)
+            foreach(string cacheGroup in request.CacheGroups)
             {
-                memoryCache.Remove(key);
+                cacheGroupVersions.Invalidate(cacheGroup);
             }
         }
 

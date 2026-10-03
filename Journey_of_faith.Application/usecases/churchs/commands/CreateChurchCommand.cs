@@ -23,7 +23,7 @@ namespace Journey_of_faith.Application.usecases.churchs.commands
         public List<IFormFile>? Files { get; set; }
         public string? Description {get; set;}
 
-        public string[] CacheKeys => ["churches-name"];
+        public string[] CacheGroups => ["churches"];
     }
 
     public class MassScheduleItem

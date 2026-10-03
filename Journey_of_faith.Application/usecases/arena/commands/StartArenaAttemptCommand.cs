@@ -28,7 +28,7 @@ public class StartArenaAttemptHandler : IRequestHandler<StartArenaAttemptCommand
 
     public async Task<ArenaStartAttemptDto> Handle(StartArenaAttemptCommand request, CancellationToken cancellationToken)
     {
-        if (!int.TryParse(_currentUser.UserId, out var userId))
+        if (!Guid.TryParse(_currentUser.UserId, out var userId))
             throw new UnauthorizationException("Người dùng không hợp lệ.");
 
         var levelDetail = await _queries.GetLevelDetailAsync(request.LevelId, userId, cancellationToken);

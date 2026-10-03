@@ -1,4 +1,5 @@
 
+using Domain.Entities;
 using Journey_of_faith.Domain.entities;
 using Journey_of_faith.Domain.entities.catholic;
 using Journey_of_faith.Domain.entities.compete;
@@ -114,6 +115,19 @@ namespace Journey_of_faith.Infrastructure.context
         public DbSet<BibleChapter> BibleChapters => Set<BibleChapter>();
         public DbSet<BibleVerse> BibleVerses => Set<BibleVerse>();
         public DbSet<NotificationLogs> NotificationLogs => Set<NotificationLogs>();
+
+
+        public DbSet<FaithPrayerCategory> FaithPrayerCategories => Set<FaithPrayerCategory>();
+        public DbSet<FaithPrayer> FaithPrayers => Set<FaithPrayer>();
+        public DbSet<StudentGroup> StudentGroups => Set<StudentGroup>();
+        public DbSet<StudentGroupMember> StudentGroupMembers => Set<StudentGroupMember>();
+        public DbSet<PrayerIntention> PrayerIntentions => Set<PrayerIntention>();
+        public DbSet<PrayerIntentionPrayer> PrayerIntentionPrayers => Set<PrayerIntentionPrayer>();
+        public DbSet<CharityActivity> CharityActivities => Set<CharityActivity>();
+        public DbSet<CharityRegistration> CharityRegistrations => Set<CharityRegistration>();
+        public DbSet<StudentEvent> StudentEvents => Set<StudentEvent>();
+        public DbSet<StudentEventRegistration> StudentEventRegistrations => Set<StudentEventRegistration>();
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder); // Identity tables trước

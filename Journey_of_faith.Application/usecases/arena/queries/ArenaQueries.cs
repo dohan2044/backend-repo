@@ -21,7 +21,7 @@ public class GetArenaLevelsHandler : IRequestHandler<GetArenaLevelsQuery, IReadO
 
     public async Task<IReadOnlyList<ArenaLevelSummaryDto>> Handle(GetArenaLevelsQuery request, CancellationToken cancellationToken)
     {
-        if (!int.TryParse(_currentUser.UserId, out var userId))
+        if (!Guid.TryParse(_currentUser.UserId, out var userId))
             throw new UnauthorizationException("Người dùng không hợp lệ.");
 
         return await _queries.GetLevelsAsync(userId, cancellationToken);
@@ -47,7 +47,7 @@ public class GetArenaLevelDetailHandler : IRequestHandler<GetArenaLevelDetailQue
 
     public async Task<ArenaLevelDetailDto> Handle(GetArenaLevelDetailQuery request, CancellationToken cancellationToken)
     {
-        if (!int.TryParse(_currentUser.UserId, out var userId))
+        if (!Guid.TryParse(_currentUser.UserId, out var userId))
             throw new UnauthorizationException("Người dùng không hợp lệ.");
 
         var level = await _queries.GetLevelDetailAsync(request.LevelId, userId, cancellationToken);
@@ -74,7 +74,7 @@ public class GetArenaUserProgressHandler : IRequestHandler<GetArenaUserProgressQ
 
     public async Task<IReadOnlyList<ArenaUserProgressDto>> Handle(GetArenaUserProgressQuery request, CancellationToken cancellationToken)
     {
-        if (!int.TryParse(_currentUser.UserId, out var userId))
+        if (!Guid.TryParse(_currentUser.UserId, out var userId))
             throw new UnauthorizationException("Người dùng không hợp lệ.");
 
         return await _queries.GetUserProgressAsync(userId, cancellationToken);
@@ -97,7 +97,7 @@ public class GetArenaAttemptHistoryHandler : IRequestHandler<GetArenaAttemptHist
 
     public async Task<IReadOnlyList<ArenaAttemptHistoryDto>> Handle(GetArenaAttemptHistoryQuery request, CancellationToken cancellationToken)
     {
-        if (!int.TryParse(_currentUser.UserId, out var userId))
+        if (!Guid.TryParse(_currentUser.UserId, out var userId))
             throw new UnauthorizationException("Người dùng không hợp lệ.");
 
         return await _queries.GetAttemptHistoryAsync(userId, cancellationToken);
@@ -137,7 +137,7 @@ public class GetArenaUserAchievementsHandler : IRequestHandler<GetArenaUserAchie
 
     public async Task<IReadOnlyList<ArenaAchievementDto>> Handle(GetArenaUserAchievementsQuery request, CancellationToken cancellationToken)
     {
-        if (!int.TryParse(_currentUser.UserId, out var userId))
+        if (!Guid.TryParse(_currentUser.UserId, out var userId))
             throw new UnauthorizationException("Người dùng không hợp lệ.");
 
         return await _queries.GetUserAchievementsAsync(userId, cancellationToken);

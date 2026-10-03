@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Journey_of_faith.Application.behaviors;
+using Journey_of_faith.Application.common.caching;
+using Journey_of_faith.Application.common.caching.interfaces;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,7 +23,12 @@ namespace Journey_of_faith.Application
                 cfg.AddOpenBehavior(typeof(CacheInvalidBehavior<,>));
             });
 
-            services.AddMemoryCache();
+            services.AddMemoryCache(options =>
+            {
+                options.SizeLimit = 10000; // Set a size limit for the cache
+                options.CompactionPercentage = 0.1;
+            });
+            services.AddSingleton<ICacheGroupVersionStore, CacheGroupVersionStore>();
             return services;
         }
     }

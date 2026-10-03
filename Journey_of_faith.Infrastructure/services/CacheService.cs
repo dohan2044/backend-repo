@@ -10,9 +10,15 @@ public class CacheService(IMemoryCache _cache) : ICacheService
     {
         var options = new MemoryCacheEntryOptions();
         if (absoluteExpiration.HasValue)
-            options.SetAbsoluteExpiration(absoluteExpiration.Value);
+        {
+            var jitterSeconds = Random.Shared.Next(0, 100);
+            options.SetAbsoluteExpiration(absoluteExpiration.Value.Add(TimeSpan.FromSeconds(jitterSeconds)));
+        }
         if (slidingExpiration.HasValue)
             options.SetSlidingExpiration(slidingExpiration.Value);
+        
+        options.SetPriority(CacheItemPriority.Normal)
+            .SetSize(1);
         _cache.Set(key, value, options);
     }
     public void Remove(string key) => _cache.Remove(key);

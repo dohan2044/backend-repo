@@ -7,6 +7,7 @@ namespace Journey_of_faith.Application.usecases.churchs.queries;
 public class GetChurchDetailsQuery : IRequest<ChurchViewDto?>, ICacheableQuery
 {
     public int Id { get; set; }
+    public string CacheGroup => "churches";
     public string CacheKey => $"church:{Id}";
     public TimeSpan? Expiration => TimeSpan.FromMinutes(10);
 }
