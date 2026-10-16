@@ -2,6 +2,7 @@ using Journey_of_faith.Application.common.dtos.arena;
 using Journey_of_faith.Application.common.interfaces;
 using Journey_of_faith.Application.exceptions;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Journey_of_faith.Application.usecases.arena.queries;
 
@@ -81,6 +82,23 @@ public class GetArenaUserProgressHandler : IRequestHandler<GetArenaUserProgressQ
     }
 }
 
+public class GetArenaQuestionByLevelIdQuery : IRequest<IReadOnlyList<ArenaQuestionDto>>
+{
+    public int LevelId {get; set;}
+}
+// public class GetArenaQuestionByLevelIdHandler : IRequestHandler<GetArenaQuestionByLevelIdQuery, IReadOnlyList<ArenaQuestionDto>>
+// {
+//     private readonly IArenaQueries _queries;
+//     public GetArenaQuestionByLevelIdHandler(IArenaQueries queries)
+//     {
+//         this._queries = queries;
+//     }
+
+//     public async Task<IReadOnlyList<ArenaQuestionDto>> Handle(GetArenaQuestionByLevelIdQuery query, CancellationToken cancellationToken = default)
+//     {
+//         return await _queries.GetQuestionsByLevelAsync()
+//     }
+// }
 // ─── Get Attempt History ──────────────────────────────────────────────────────
 public class GetArenaAttemptHistoryQuery : IRequest<IReadOnlyList<ArenaAttemptHistoryDto>>;
 

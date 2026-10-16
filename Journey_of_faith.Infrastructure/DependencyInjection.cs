@@ -23,6 +23,8 @@ using System.Text.Json;
 using Journey_of_faith.Application.common.interfaces.caching;
 using Journey_of_faith.Infrastructure.persistence.repositories;
 using Journey_of_faith.Application.usecases.students;
+using Journey_of_faith.Application.usecases.events;
+using Journey_of_faith.Application.usecases.charities;
 
 namespace Journey_of_faith.Infrastructure
 {
@@ -112,6 +114,10 @@ namespace Journey_of_faith.Infrastructure
             services.AddLoggedScoped<Journey_of_faith.Application.usecases.events.IEventQueries, EventQueries>();
             services.AddScoped<IStudentGroupRepository, StudentRepository>();
             services.AddScoped<IStudentQueries, StudentQueries>();
+            services.AddScoped<IStudentEventRepository, StudentEventRepository>();
+            services.AddScoped<IStudentEventQueries, StudentEventQueries>();
+            services.AddScoped<ICharityRepository, CharityRepository>();
+            services.AddScoped<ICharityQueries, CharityQueries>();
             services.AddScoped<IUnitOfWork, Journey_of_faith.Infrastructure.context.UnitOfWork>();
             services.AddLoggedScoped<IFileStorageService, FileStorageQuestion>();
             services.AddLoggedScoped<IExamRepository, ExamRepository>();
@@ -188,4 +194,3 @@ namespace Journey_of_faith.Infrastructure
         }
     }
 }
-

@@ -9,6 +9,8 @@ namespace Journey_of_faith.Infrastructure.identity
         public Guid Id { get; set;  }
         public string Token { get; set; }
         public Guid UserId { get; set; }
+        public bool IsUsed {get; set;} = false;
+        public Guid? UsedBy {get; set;}
         public DateTime ExpiresOnUtc { get; set; }
         public ApplicationUser User { get; set; }
     }

@@ -6,6 +6,7 @@ public class QueryFilter
     public string? Province {get; set;}
     public string? Ward {get; set;}
     public string? Time {get; set;}
+    public string? Name {get; set;}
     public int? Page {get; set;} = 1;
     public int? PageSize {get; set;} = 25;
 }

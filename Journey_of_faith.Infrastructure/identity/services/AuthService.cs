@@ -47,7 +47,7 @@ namespace Journey_of_faith.Infrastructure.identity.services
             {
                 _logger.LogWarning("Login rejected because the account was not found");
                 throw new UnauthorizationException("Tài khoản hoặc mật khẩu không chính xác");
-            }            
+            }
             var result = await _userManager.CheckPasswordAsync(user, passwrod);
             if (!result)
             {
@@ -56,13 +56,13 @@ namespace Journey_of_faith.Infrastructure.identity.services
             }
 
             var expiredToken = await _context.RefreshTokens.Where(e => e.UserId == user.Id).ToListAsync();
-            if(expiredToken.Any())
+            if (expiredToken.Any())
             {
                 _context.RefreshTokens.RemoveRange(expiredToken);
             }
             List<string> claims = new List<string>();
             var roles = await _userManager.GetRolesAsync(user);
-            foreach(var role in roles)
+            foreach (var role in roles)
             {
                 var roleExists = await _roleManager.FindByNameAsync(role);
                 var claimsRole = await _roleManager.GetClaimsAsync(roleExists);
@@ -96,11 +96,33 @@ namespace Journey_of_faith.Infrastructure.identity.services
                 throw new UnauthorizationException("Refresh token đã hết hạn hoặc không hợp lệ.");
             }
 
+            if (refresh.IsUsed)
+            {
+                _logger.LogWarning("🚨 PHÁT HIỆN TOKEN REUSE! Token {TokenId} của User {UserId} bị dùng lại. Tiến hành thu hồi toàn bộ chuỗi token.", refresh.Id, refresh.UserId);
+
+                // Tìm và vô hiệu hóa/xóa TẤT CẢ các refresh token khác của User này 
+                // Hoặc tối ưu hơn là xóa toàn bộ các token thuộc dòng họ (Token Family) này.
+                // Ở đây mình chọn cách an toàn nhất: Hủy TẤT CẢ token chưa dùng của user này để bắt login lại.
+                var activeTokens = await _context.RefreshTokens
+                    .Where(t => t.UserId == refresh.UserId && !t.IsUsed)
+                    .ToListAsync();
+
+                foreach (var t in activeTokens)
+                {
+                    // Bạn có thể xóa hẳn (Remove) hoặc đánh dấu hủy (IsRevoked / IsUsed = true)
+                    _context.RefreshTokens.Remove(t);
+                }
+
+                await _context.SaveChangesAsync();
+
+                throw new UnauthorizationException("Cảnh báo bảo mật: Phiên đăng nhập bất thường. Vui lòng đăng nhập lại.");
+            }
+
             var user = await _userManager.FindByIdAsync(refresh.UserId.ToString());
             var roles = await _userManager.GetRolesAsync(user);
             var expiry = configuration.GetValue<int>("Token:Expiry");
             List<string> claims = new List<string>();
-            foreach(var role in roles)
+            foreach (var role in roles)
             {
                 var roleExists = await _roleManager.FindByNameAsync(role);
                 var claimsRole = await _roleManager.GetClaimsAsync(roleExists);
@@ -109,8 +131,11 @@ namespace Journey_of_faith.Infrastructure.identity.services
             var newToken = _tokenService.GenerateToken(user, roles.ToList(), claims);
             var newRefreshToken = _tokenService.CreateRefreshToken(user.Id);
 
-            _context.RefreshTokens.Remove(refresh);
             await _context.RefreshTokens.AddAsync(newRefreshToken);
+
+            refresh.IsUsed = true;
+            refresh.UsedBy = newRefreshToken.Id;
+            _context.RefreshTokens.Update(refresh);
             await _context.SaveChangesAsync();
 
             _logger.LogInformation("Refreshed authentication tokens for user {UserId}", user.Id);
@@ -195,9 +220,9 @@ namespace Journey_of_faith.Infrastructure.identity.services
         public async Task<User> GetMe()
         {
             var userId = httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier ?? "sub");
-            if(userId == null)
+            if (userId == null)
             {
-                throw new BadRequestException("Nguoi dung khong hop le");
+                throw new UnauthorizationException("Nguoi dung khong hop le");
             }
 
             var user = await _userManager.FindByIdAsync(userId);
@@ -224,6 +249,20 @@ namespace Journey_of_faith.Infrastructure.identity.services
                 user.Score,
                 user.DayStreak
             );
+        }
+        public async Task Logout(string refreshToken)
+        {
+            var expiredRefreshToken = await _context
+                .RefreshTokens.FirstOrDefaultAsync(e => e.Token == refreshToken);
+
+            if(expiredRefreshToken is null)
+                throw new NotFoundException("Token này không tồn tại");
+            if(!expiredRefreshToken.IsUsed)
+                throw new UnauthorizationException("Token này đã bị hủy rồi");
+
+            expiredRefreshToken.IsUsed = true;
+            _context.RefreshTokens.Update(expiredRefreshToken);
+            await _context.SaveChangesAsync();   
         }
     }
 }

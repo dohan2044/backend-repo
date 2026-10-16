@@ -104,20 +104,12 @@ public class SubmitArenaAttemptHandler : IRequestHandler<SubmitArenaAttemptComma
         bool isPassed = score >= (levelInfo?.PassScore ?? 80);
 
         // Build ArenaAttempt để update
-        var attempt = new ArenaAttempt
-        {
-            Id = (int)command.AttemptId,
-            UserId = userId,
-            LevelId = levelInfo?.LevelId ?? 0,
-            Score = score,
-            TotalCorrect = totalCorrect,
-            MaxStreak = maxStreak,
-            DurationSeconds = command.DurationSeconds,
-            IsPassed = isPassed,
-            CreatedAt = DateTime.UtcNow
-        };
-        foreach (var ans in attemptAnswers) attempt.AddAnswer(ans);
+         var attempt = new ArenaAttempt((int)command.AttemptId, userId, levelInfo?.LevelId ?? 0, 
+                    score,
+                    totalCorrect: totalCorrect, maxStreak = maxStreak, isPassed, command.DurationSeconds);
 
+        foreach (var ans in attemptAnswers) attempt.AddAnswer(ans);
+        attempt.Complete();
         await _repo.SaveAttemptAsync(attempt, cancellationToken);
 
         // Upsert progress
@@ -152,11 +144,10 @@ public class SubmitArenaAttemptHandler : IRequestHandler<SubmitArenaAttemptComma
         };
     }
 
-    private Task<Dictionary<long, long?>> GetCorrectOptionMapAsync(long attemptId, CancellationToken cancellationToken)
+    private async Task<Dictionary<long, long?>> GetCorrectOptionMapAsync(long attemptId, CancellationToken cancellationToken)
     {
-        // Placeholder: thực tế sẽ inject thêm 1 method vào IArenaQueries
-        // hoặc implement trực tiếp trong repo. Để handler clean, inject qua _queries.
-        return Task.FromResult(new Dictionary<long, long?>());
+        var data = await _queries.CorrectQuestionOptions(cancellationToken);
+        return data.ToDictionary(e => e.QuestionId, e => e.AnswerId);
     }
 
     private static List<ArenaUserAchievement> ResolveNewAchievements(int score, int maxStreak, bool isPassed)

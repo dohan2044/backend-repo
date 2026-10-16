@@ -82,6 +82,23 @@ namespace Journey_of_faith.Api.Controllers
             });
         }
         [MapToApiVersion(1)]
+        [HttpGet("mass")]
+        public async Task<IActionResult> GetMassSchedule([FromQuery] string? time, [FromQuery] string? name, [FromQuery] string? province)
+        {
+            var result = await _mediator.Send(new GetMassScheduleQuery
+            {
+                Time = time,
+                Name = name,
+                Province = province
+            });
+
+            return Ok(new ApiResponse<IEnumerable<MassScheduleDto>>
+            {
+                Data = result,
+                Message = "lấy dữ liệu thành công."
+            });
+        }
+        [MapToApiVersion(1)]
         [HttpPost("liturgy")]
         [Authorize]
         public async Task<IActionResult> CreateLiturgy([FromBody] CreateLiturgy command)
@@ -261,8 +278,11 @@ namespace Journey_of_faith.Api.Controllers
             [FromQuery] string? province,
             [FromQuery] string? ward,
             [FromQuery] string? time,
+            [FromQuery] string? name,
             [FromQuery] int? page,
-            [FromQuery] int? pageSize)
+            [FromQuery] int? pageSize,
+            [FromQuery] double longitude, 
+            [FromQuery] double latitude)
         {
             var result = await _mediator.Send(
                 new GetChurchWithCondition
@@ -271,8 +291,11 @@ namespace Journey_of_faith.Api.Controllers
                     Province = province,
                     Ward = ward,
                     Time = time,
+                    Name = name,
                     Page = page.HasValue ? page.Value : 1,
-                    PageSize = pageSize.HasValue ? pageSize.Value : 10
+                    PageSize = pageSize.HasValue ? pageSize.Value : 30,
+                    Longitude = longitude,
+                    Latitude = latitude
                 }
             );
 
@@ -419,5 +442,7 @@ namespace Journey_of_faith.Api.Controllers
                 Data = daily
             });
         }
+
+
     }
 }

@@ -501,11 +501,13 @@ public sealed class ChurchQueries : BaseRepository, IChurchQueries
                 FROM [{_schema}].[{TableTopicChurch.MassSchedule}]
                 WHERE ChurchId IN @ChurchIds
                   AND (@Time IS NULL OR [Time] LIKE '%' + @Time + '%')
+                  AND (@Name IS NULL OR Name Like '%' + @Name + '%')
                 """,
                 new
                 {
                     ChurchIds = churchIds,
-                    Time = string.IsNullOrWhiteSpace(filter.Time) ? null : filter.Time
+                    Time = string.IsNullOrWhiteSpace(filter.Time) ? null : filter.Time,
+                    Name = string.IsNullOrWhiteSpace(filter.Name) ? null : filter.Name
                 })).ToList();
 
             var scheduleIds = massSchedules.Select(schedule => schedule.Id).ToArray();
@@ -549,15 +551,20 @@ public sealed class ChurchQueries : BaseRepository, IChurchQueries
         });
     }
 
-    public async Task<IEnumerable<MassScheduleViewDto>> GetMassScheduleToday()
+    public async Task<IEnumerable<MassScheduleDto>> GetMassScheduleToday()
     {
         return await QueryAsync(async connection =>
         {
-            return await connection.QueryAsync<MassScheduleViewDto>(
-                $"""
-                SELECT m.Id, m.ChurchId, m.Name AS MassName, m.Time, c.Name AS ChurchName
-                FROM [{_schema}].[{TableTopicChurch.MassSchedule}] m
-                INNER JOIN [{_schema}].[{TableTopicChurch.Church}] c ON m.ChurchId = c.Id
+            return await connection.QueryAsync<MassScheduleDto>(
+                $@"""
+                Select c.Name as ChurchName, 
+		   ms.Name as MassScheduleName,
+		   c.Boss as BossName,
+		   c.Address as ChurchAddress,
+		   ms.[Time] as Time
+	            From [jcodepro_journey_of_faith].[Church] c
+	Inner join [jcodepro_journey_of_faith].[MassSchedule] ms
+		On c.Id = ms.ChurchId
                 WHERE m.Date = @CurrentDate
                 """,
                 new { CurrentDate = DateTime.Today });
@@ -580,6 +587,23 @@ public sealed class ChurchQueries : BaseRepository, IChurchQueries
         });
     }
 
+    public async Task<IEnumerable<MassScheduleDto>> GetMassSchedulesAsync(string time, string name, string province, CancellationToken cancellationToken = default)
+    {
+        return await QueryAsync(async connection =>
+        {
+            return await connection.QueryAsync<MassScheduleDto>(new CommandDefinition(
+                 "spGetMassSchedule",
+                 new
+                 {
+                     Time = time,
+                     Name = name,
+                     Province = province
+                 },
+                 commandType: CommandType.StoredProcedure,
+                 cancellationToken: cancellationToken
+            ));
+        });
+    }
     private static ChurchViewDto MapChurch(Church church, bool isFollowed = false)
     {
         return new ChurchViewDto
@@ -630,4 +654,17 @@ public sealed class ChurchQueries : BaseRepository, IChurchQueries
             }).ToList()
         };
     }
+
+    // public async Task<IReadOnlyList<object>> MassScheduleAsync(string name)
+    // {
+    //     return await QueryAsync(async connection =>
+    //     {
+    //         var sql = $@"
+
+    //         ";
+    //         return await connection.ExecuteAsync(new CommandDefinition(
+    //             commandText: ""
+    //         ))
+    //     });
+    // }
 }

@@ -11,6 +11,7 @@ public interface IArenaQueries
     Task<IReadOnlyList<ArenaAttemptHistoryDto>> GetAttemptHistoryAsync(Guid userId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<ArenaLeaderboardEntryDto>> GetLeaderboardAsync(int levelId, int top = 20, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<ArenaAchievementDto>> GetUserAchievementsAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task<List<CorrectOption>> CorrectQuestionOptions(CancellationToken cancellationToken = default);
     Task<bool> LevelExistsAsync(int levelId, CancellationToken cancellationToken = default);
     Task<bool> LevelCodeExistsAsync(string levelCode, CancellationToken cancellationToken = default);
     Task<bool> AttemptBelongsToUserAsync(long attemptId, Guid userId, CancellationToken cancellationToken = default);
