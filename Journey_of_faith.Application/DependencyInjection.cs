@@ -25,7 +25,7 @@ namespace Journey_of_faith.Application
 
             services.AddMemoryCache(options =>
             {
-                options.SizeLimit = 10000; // Set a size limit for the cache
+                // options.SizeLimit = 10000; // Set a size limit for the cache
                 options.CompactionPercentage = 0.1;
             });
             services.AddSingleton<ICacheGroupVersionStore, CacheGroupVersionStore>();

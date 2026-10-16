@@ -119,3 +119,10 @@ public class ArenaAchievementDto
     public bool IsUnlocked { get; set; }
     public DateTime? UnlockedAt { get; set; }
 }
+
+
+    public sealed class CorrectOption
+    {
+        public long QuestionId {get; set;}
+        public long? AnswerId {get; set;}
+    }

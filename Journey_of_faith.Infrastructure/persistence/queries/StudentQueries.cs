@@ -16,13 +16,30 @@ public class StudentQueries : BaseRepository, IStudentQueries
     {
     }
 
-    public Task<bool> ExistsGroupNameAsync(string groupName)
+    public Task<bool> ExistsGroupNameAsync(string groupName, CancellationToken cancellationToken = default)
     {
         return QueryAsync(async connection =>
         {
-            var query = $@"SELECT COUNT(*) FROM {_schemaName.Schema}.{StudentNameTableQueries.StudentGroupTable} WHERE Name = @groupName";
-            var count = await connection.ExecuteScalarAsync<int>(query, new { groupName });
+            var command = new CommandDefinition(
+                $@"SELECT COUNT(*) FROM [{_schemaName.Schema}].[{StudentNameTableQueries.StudentGroupTable}] WHERE Name = @groupName AND ISNULL(IsDeleted, 0) = 0",
+                new { groupName },
+                cancellationToken: cancellationToken);
+            var count = await connection.ExecuteScalarAsync<int>(command);
             return count > 0;
+        });
+    }
+
+    public async Task<bool> ExistsGroupIdAsync(int groupId, CancellationToken cancellationToken = default)
+    {
+        return await QueryAsync(async connection =>
+        {
+           var command = new CommandDefinition(
+            @$"Select count(id) from {_schemaName.Schema}.{StudentNameTableQueries.StudentGroupTable} where id = @groupId",
+            new {groupId},
+            cancellationToken: cancellationToken
+           );
+
+           return await connection.ExecuteScalarAsync<int>(command) > 0;
         });
     }
 }

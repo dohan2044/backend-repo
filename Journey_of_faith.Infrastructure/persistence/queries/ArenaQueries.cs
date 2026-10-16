@@ -76,6 +76,13 @@ public sealed class ArenaQueries : BaseRepository, IArenaQueries
         => QueryAsync<ArenaStartAttemptDto?>(async connection =>
         {
             using var multi = await connection.QueryMultipleAsync(new CommandDefinition($@"
+                DECLARE @TotalQuestions INT;
+
+                -- 1. Lấy số lượng câu hỏi cần bốc cho Attempt/Level này gán vào biến
+                SELECT @TotalQuestions = l.TotalQuestions
+                FROM [{_schemaName.Schema}].[{ArenaTable.Attempt}] a
+                INNER JOIN [{_schemaName.Schema}].[{ArenaTable.Level}] l ON l.Id = a.LevelId
+                WHERE a.Id = @AttemptId;
                 -- Attempt + Level info
                 SELECT
                     a.Id AS AttemptId, a.LevelId,
@@ -85,7 +92,7 @@ public sealed class ArenaQueries : BaseRepository, IArenaQueries
                 WHERE a.Id = @AttemptId AND a.UserId = @UserId;
 
                 -- Questions (random TotalQuestions từ level)
-                SELECT TOP (l.TotalQuestions)
+                SELECT TOP (@TotalQuestions)
                     q.Id, q.Content
                 FROM [{_schemaName.Schema}].[{ArenaTable.Question}] q
                 INNER JOIN [{_schemaName.Schema}].[{ArenaTable.Attempt}] a ON a.LevelId = q.LevelId
@@ -190,6 +197,23 @@ public sealed class ArenaQueries : BaseRepository, IArenaQueries
             return rows.ToList();
         });
 
+    public  Task<List<CorrectOption>> CorrectQuestionOptions(CancellationToken token = default)
+    {
+        return QueryAsync<List<CorrectOption>>(async connection =>
+        {
+            var sql = @"Select q.Id as QuestionId, qo.Id AnswerId
+                    From [jcodepro_journey_of_faith].[ArenaQuestions] q
+                    Left Join [jcodepro_journey_of_faith].[ArenaQuestionOptions] qo
+                    On q.Id  = qo.QuestionId 
+                    where qo.IsCorrect  = 1";
+            var data = await connection.QueryAsync<CorrectOption>(new CommandDefinition(
+                commandText: sql,
+                cancellationToken: token
+            ));
+            return data.ToList();
+        });
+    }
+
     // ── Guard queries ─────────────────────────────────────────────────────────
     public Task<bool> LevelExistsAsync(int levelId, CancellationToken cancellationToken = default)
         => QueryAsync(async connection =>
@@ -212,7 +236,7 @@ public sealed class ArenaQueries : BaseRepository, IArenaQueries
     public Task<bool> AttemptAlreadySubmittedAsync(long attemptId, CancellationToken cancellationToken = default)
         => QueryAsync(async connection =>
             await connection.ExecuteScalarAsync<int>(new CommandDefinition(
-                $"SELECT COUNT(1) FROM [{_schemaName.Schema}].[{ArenaTable.AttemptAnswer}] WHERE AttemptId = @AttemptId",
+                $"SELECT Case when Status <> 1 Then 1 Else 0 End FROM [{_schemaName.Schema}].[{ArenaTable.AttemptAnswer}] WHERE AttemptId = @AttemptId",
                 new { AttemptId = attemptId }, cancellationToken: cancellationToken)) > 0);
 
     // ── Private row types ─────────────────────────────────────────────────────
@@ -223,4 +247,5 @@ public sealed class ArenaQueries : BaseRepository, IArenaQueries
         public string Content { get; set; } = string.Empty;
         public short SortOrder { get; set; }
     }
+
 }

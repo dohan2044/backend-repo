@@ -43,7 +43,7 @@ namespace Journey_of_faith.Infrastructure.identity.services
                 }
             }
 
-            string role =null;
+            string role = null;
             if(!string.IsNullOrEmpty(roleName)) {
                 role = roleName;
             } else {

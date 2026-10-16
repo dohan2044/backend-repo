@@ -81,6 +81,57 @@ namespace Journey_of_faith.Domain.entities.compete
         public virtual IReadOnlyCollection<ArenaAttemptAnswer> Answers => _answers.AsReadOnly();
 
         public void AddAnswer(ArenaAttemptAnswer answer) => _answers.Add(answer);
+        public StatusContest Status {get; set;} = StatusContest.Progress;
+
+        private ArenaAttempt() {}
+        public ArenaAttempt(Guid userId, int levelId, int score, int totalCorrect, int maxStreak, bool pass, int durationSeconds)
+        {
+            UserId = userId;
+            LevelId = levelId;
+            Score = score;
+            TotalCorrect = totalCorrect;
+            MaxStreak = maxStreak;
+            IsPassed = pass;
+            DurationSeconds = durationSeconds;
+            CreatedAt = DateTime.Now;
+        }
+
+        public ArenaAttempt(int id, Guid userId, int levelId, int score, int totalCorrect, int maxStreak, bool pass, int durationSeconds)
+        {
+            Id = id;
+            UserId = userId;
+            LevelId = levelId;
+            Score = score;
+            TotalCorrect = totalCorrect;
+            MaxStreak = maxStreak;
+            IsPassed = pass;
+            DurationSeconds = durationSeconds;
+            CreatedAt = DateTime.Now;
+        }
+        public void Complete()
+        {
+            if(Status != StatusContest.Progress) 
+                throw new InvalidOperationException($"Không thể nộp bài thi khi đang ở trạng thái {Status}");
+            Status = StatusContest.Submited;  
+        }
+
+
+
+        public void MarkAsTimeOut()
+        {
+            if(Status != StatusContest.Progress)
+            {
+                return;
+            }
+            Status = StatusContest.TimeOut;
+        }
+
+        public void Abandon()
+        {
+            if(Status != StatusContest.Progress)
+                return;
+            Status = StatusContest.Abandoned;
+        }
     }
 
     public class ArenaAttemptAnswer : AuditableEntity
@@ -113,4 +164,13 @@ namespace Journey_of_faith.Domain.entities.compete
 
         public virtual ArenaAchievement Achievement { get;  set; } = null!;
     }
+}
+
+
+public enum StatusContest
+{
+    Progress = 1,
+    Submited = 2,
+    TimeOut = 3,
+    Abandoned = 4
 }
