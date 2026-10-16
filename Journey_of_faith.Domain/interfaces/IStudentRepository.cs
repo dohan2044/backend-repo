@@ -5,10 +5,10 @@ namespace Journey_of_faith.Domain.interfaces;
 
 public interface IStudentGroupRepository
 {
-    Task AddGroup(StudentGroup group);
-    Task AddGroupMember(StudentGroupMember groupMember);
+    Task AddGroup(StudentGroup group, CancellationToken token = default);
+    Task AddGroupMember(StudentGroupMember groupMember, CancellationToken token = default);
     void UpdateGroup(StudentGroup group);
-    Task AssignGroupMemberRole(StudentGroupMember groupMember, string role);
+    void AssignGroupMemberRole(StudentGroupMember groupMember);
     void DeleteGroup(StudentGroup group);
     void DeleteGroupMember(StudentGroupMember groupMember);
     StudentGroup? GetGroupById(int groupId);

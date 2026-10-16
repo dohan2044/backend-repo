@@ -1,16 +1,26 @@
 using Asp.Versioning;
 using Journey_of_faith.Api.Attributes;
 using Journey_of_faith.Application.usecases.students.commands;
+using Journey_of_faith.Application.usecases.students.queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Journey_of_faith.Api.Controllers;
 
 [ApiController]
-[Route("api/{version:apiVersion}/students")]
+[Route("api/v{version:apiVersion}/students")]
 [ApiVersion(1)]
 public class StudentController(IMediator mediator) : ControllerBase
 {
+    [MapToApiVersion(1)]
+    [HttpGet("groups")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetGroups([FromQuery] GetStudentGroupsQuery query)
+    {
+        var data = await mediator.Send(query);
+        return Ok(new { message = "Lấy danh sách nhóm thành công", data });
+    }
+
     [MapToApiVersion(1)]
     [HttpPost("groups")]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -20,5 +30,14 @@ public class StudentController(IMediator mediator) : ControllerBase
         await mediator.Send(command);
         return CreatedAtAction(nameof(CreateGroup), new { version = "1", messge = "Tạo nhóm thanh công"});
     }
-
+    [MapToApiVersion(1)]
+    [HttpPost("groups/members")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CreateGroupMember([FromBody] CreateStudentMemberCommand command)
+    {
+        await mediator.Send(command);
+        return CreatedAtAction(nameof(CreateGroupMember), 
+        new { version = "1", message = "Thêm thành viên vào nhóm thành công" });
+    }
 }

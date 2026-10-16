@@ -39,17 +39,11 @@ public class StartArenaAttemptHandler : IRequestHandler<StartArenaAttemptCommand
             throw new ForbiddenException("Bạn chưa đủ điều kiện để thi level này. Hãy hoàn thành level tiên quyết trước.");
 
         // Tạo attempt mới
-        var attempt = new ArenaAttempt
-        {
-            UserId = userId,
-            LevelId = request.LevelId,
-            Score = 0,
-            TotalCorrect = 0,
-            MaxStreak = 0,
-            DurationSeconds = 0,
-            IsPassed = false,
-            CreatedAt = DateTime.UtcNow
-        };
+        var attempt = new ArenaAttempt(userId, 
+            request.LevelId, score: 0, totalCorrect: 0, 
+            maxStreak: 0, false, durationSeconds: 0);
+        
+           
 
         var attemptId = await _repo.SaveAttemptAsync(attempt, cancellationToken);
 
